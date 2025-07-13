@@ -21,7 +21,6 @@ var current_zoom_level = 0
 
 @onready var camera_2d = get_node("Camera2D")
 
-
 # State Variables
 var currentDirection = 1
 var playerAttacking = false
@@ -30,7 +29,13 @@ var isHit = false
 var health_increase = false
 
 func _ready() -> void:
+	release_mouse_cursor()
 	set_zoom(1)
+
+
+func release_mouse_cursor() -> void:
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+
 
 func set_zoom(zoomlevel: int) -> void:
 	current_zoom_level = zoomlevel
