@@ -5,6 +5,7 @@
 class_name AerialCamera extends Node3D
 
 signal changed_movement_mode(new_mode: MovementMode)
+@warning_ignore("unused_signal")
 signal movement_free_started(last_transform: AerialCameraTransform)
 
 class AerialCameraTransform:
