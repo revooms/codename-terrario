@@ -1,0 +1,78 @@
+[gd_scene load_steps=4 format=3 uid="uid://bewi7gvan2wwq"]
+
+[ext_resource type="Script" uid="uid://ggvy7h4ps472" path="res://addons/ninetailsrabbit.indie_blueprint_ui/src/content_warning/content_warning_displayer.gd" id="1_a6wap"]
+[ext_resource type="Script" uid="uid://b76wk7tpa8pkd" path="res://addons/ninetailsrabbit.indie_blueprint_ui/src/content_warning/advisors/content_warning.gd" id="2_ahi27"]
+[ext_resource type="Resource" uid="uid://bgr4ccqwj3qj7" path="res://addons/ninetailsrabbit.indie_blueprint_ui/src/content_warning/advisors/content_warning_resemblance.tres" id="6_djunr"]
+
+[node name="ContentWarnings" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_a6wap")
+content_warnings_to_display = Array[ExtResource("2_ahi27")]([ExtResource("6_djunr")])
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.0383972, 0.0383972, 0.0383972, 1)
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 200
+theme_override_constants/margin_top = 50
+theme_override_constants/margin_right = 200
+theme_override_constants/margin_bottom = 50
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_constants/separation = 10
+
+[node name="ContentWarningTitle" type="Label" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "PHOTOSENSITIVE_TITLE"
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="ContentWarningSubtitle" type="Label" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "PHOTOSENSITIVE_SUBTITLE"
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="ContentWarningDescription" type="RichTextLabel" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_constants/line_separation = 0
+theme_override_font_sizes/normal_font_size = 18
+bbcode_enabled = true
+text = "PHOTOSENSITIVE_CONTENT"
+fit_content = true
+
+[node name="ContentWarningSecondaryDescription" type="RichTextLabel" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_font_sizes/normal_font_size = 18
+bbcode_enabled = true
+text = "PHOTOSENSITIVE_CONTENT_2"
+fit_content = true
