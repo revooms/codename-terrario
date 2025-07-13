@@ -31,44 +31,83 @@ var health_increase = false
 var isJumping = false
 var isFalling = false
 
+@onready var tilemap_layer: TileMapLayer = %TileMapLayer
+var original_tile_id: int
+var highlight_tile_id: int = 7  # Ersetzen Sie dies mit der ID Ihres Highlight-Tiles
+var tilemaplayer_position: Vector2i
+
 func _ready() -> void:
 	release_mouse_cursor()
 	set_zoom(1)
 
 func debugmsg() -> String:
 	var msg = "Player Debug Info:"
+	var tile_position: Vector2i = get_tilemaplayer_position()
+
 	msg += "\n"
 	msg += "pos: %3.2f/%3.2f" % [position.x, position.y]
 	msg += "\n"
+	msg += "pos2: %3.2f/%3.2f" % [tile_position.x, tile_position.y]
+	msg += "\n"
 	msg += "currentDir: %d" % [currentDirection]
 	msg += "\n"
-	msg += "onfloor: %s" % [is_on_floor()]
+	msg += "zoom: %3.2f" % [zoom_levels[current_zoom_level]]
 	msg += "\n"
-	msg += "onceil: %s" % [is_on_ceiling()]
+	msg += "isonfloor: %s" % [is_on_floor()]
 	msg += "\n"
-	msg += "jumping: %s" % [isJumping]
+	msg += "isonceil: %s" % [is_on_ceiling()]
 	msg += "\n"
-	msg += "falling: %s" % [isFalling]
+	msg += "isjumping: %s" % [isJumping]
+	msg += "\n"
+	msg += "isfalling: %s" % [isFalling]
+	msg += "\n"
+	msg += "isHit: %s" % [isHit]
+	msg += "\n"
+	msg += "isDead: %s" % [isDead]
 	msg += "\n"
 	return msg
 
+func highlight_cell(_x: int, _y: int, duration: float = 2.0):
+	var cell_coords = get_tilemaplayer_position()
+
+	var tile_data = tilemap_layer.get_cell_tile_data(cell_coords)
+	print(str(tile_data))
+
+	# Setzen Sie die Zelle auf den Highlight-Tile
+	tilemap_layer.set_cell(cell_coords,0, Vector2i(0,7))
+	
+	# Timer, um den Tile nach der gewünschten Zeit zurückzusetzen
+	var timer = Timer.new()
+	timer.wait_time = duration
+	# timer.timeout.connect(_on_Timer_timeout, ["x", "y"])
+	timer.timeout.connect(_on_Timer_timeout)
+	add_child(timer)
+	timer.start()
+
+func _on_Timer_timeout(x: int, y: int):
+	# Setzen Sie die Zelle zurück auf den ursprünglichen Tile
+	# tilemap_layer.tilemap.set_cell(x, y, original_tile_id)
+	tilemap_layer.set_cell(Vector2i(x,y), 0, Vector2i(0,1))
+	queue_free()  # Optional: Timer entfernen
+
+
+func get_tilemaplayer_position() -> Vector2i:
+	tilemaplayer_position = tilemap_layer.local_to_map(tilemap_layer.to_local(self.position))
+	return tilemaplayer_position
+
 
 func detect_below() -> void:
-	
 	pass
 
 func get_player_tile() -> void:
-	var player_pos = self.position
-	var tilemap_layer = %TileMapLayer
-	# var cell_coords = tilemaplayer.local_to_map(tilemaplayer.to_local(player_pos))
-	var cell_coords = tilemap_layer.local_to_map(tilemap_layer.to_local(player_pos))
+	var cell_coords = get_tilemaplayer_position()
 	var tile_data = tilemap_layer.get_cell_tile_data(cell_coords)
-	print(str(tile_data))
+	#print(str(tile_data))
 	if tile_data:
 		print("Zelle ", cell_coords, " enthält Tile-ID: ", tile_data.get_tile_id())
 	else:
 		print("Zelle ", cell_coords, " ist leer.")
-	print("pos %s - %s" % [str(player_pos), str(cell_coords)])
+	#print("pos %s - %s" % [str(self.position), str(cell_coords)])
 
 
 
@@ -81,12 +120,12 @@ func release_mouse_cursor() -> void:
 func set_zoom(zoomlevel: int) -> void:
 	current_zoom_level = zoomlevel
 	current_zoom_level = clampf(current_zoom_level, 0, zoom_levels.size() - 1)
-	print("Setting zoom lvl to %f - %f" % [current_zoom_level, zoom_levels[current_zoom_level]])
+	# print("Setting zoom lvl to %f - %f" % [current_zoom_level, zoom_levels[current_zoom_level]])
 	camera_2d.zoom = Vector2(zoom_levels[current_zoom_level], zoom_levels[current_zoom_level])
 
 func _process(delta: float):
 	paint_debug_msg()
-	get_player_tile()
+	# get_player_tile()
 	if health_increase and playerHealth < 100:
 		playerHealth += 10 * delta
 		if playerHealth >= 100:
@@ -114,6 +153,7 @@ func _physics_process(delta):
 	
 	# Check player is on the floor
 	if is_on_floor() and not isDead and not isHit:
+		
 		if Input.is_action_just_pressed("jump") and not playerAttacking:
 			velocity.y = - jumpPower
 			$AnimationPlayer.play("Jump")
