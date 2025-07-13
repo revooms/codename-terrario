@@ -1,7 +1,10 @@
-[gd_scene load_steps=18 format=3 uid="uid://diqppl03jjibi"]
+[gd_scene load_steps=19 format=3 uid="uid://diqppl03jjibi"]
 
 [ext_resource type="Script" uid="uid://dkw285f4e6tm8" path="res://prefabs/player/player.gd" id="1_sxsrd"]
 [ext_resource type="Texture2D" uid="uid://otegl7a4k206" path="res://prefabs/player/player.png" id="2_rdx4y"]
+
+[sub_resource type="Resource" id="Resource_rdx4y"]
+metadata/__load_path__ = "res://example/wyvernbox/item_generators/basic_loot.tres"
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_fxypx"]
 
@@ -356,11 +359,12 @@ _data = {
 [sub_resource type="CircleShape2D" id="CircleShape2D_ijpgx"]
 radius = 24.1661
 
-[node name="Player" type="CharacterBody2D" groups=["Player"]]
+[node name="Player" type="CharacterBody2D" groups=["Player", "hero"]]
 collision_layer = 4
 collision_mask = 3
 script = ExtResource("1_sxsrd")
 jumpPower = 600
+generator = SubResource("Resource_rdx4y")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(1, -28)
@@ -388,8 +392,8 @@ libraries = {
 }
 
 [node name="Camera2D" type="Camera2D" parent="."]
-zoom = Vector2(0.5, 0.5)
 position_smoothing_enabled = true
+position_smoothing_speed = 2.0
 
 [node name="Area2D" type="Area2D" parent="." groups=["enemycandamage"]]
 collision_layer = 4
